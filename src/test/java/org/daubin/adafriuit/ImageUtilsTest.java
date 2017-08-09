@@ -6,7 +6,6 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.io.IOException;
@@ -18,8 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.daubin.adafriuit.image.ImageUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class ImageUtilsTest {
     
@@ -27,11 +26,14 @@ public class ImageUtilsTest {
     public void to565RGBBytes() throws IOException {
         BufferedImage bufferedImage = getTestImage("TEST");
         
+        // File outputfile = new File("image.jpg");
+        // ImageIO.write(bufferedImage, "jpg", outputfile);
+
         byte[] to565rgbBytes = ImageUtils.to565RGBBytes(bufferedImage);
         
-        Assert.assertEquals(-124, to565rgbBytes[0]);
-        Assert.assertEquals(16, to565rgbBytes[1]);
-        Assert.assertEquals(-124, to565rgbBytes[2]);
+        Assert.assertEquals(to565rgbBytes[0], (byte) 124);
+        Assert.assertEquals(to565rgbBytes[1], (byte) 83);
+        Assert.assertEquals(to565rgbBytes[2], (byte) 124);
     }
     
     @Test
@@ -52,13 +54,14 @@ public class ImageUtilsTest {
         
         Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
         JPanel panel = new JPanel();
-        panel.setLayout(null); //new FlowLayout());
+        panel.setLayout(null); // new FlowLayout());
         panel.setBackground(Color.WHITE);
         panel.setSize(ILI9341.ILI9341_TFTWIDTH, ILI9341.ILI9341_TFTHEIGHT);
         
         JButton button = new JButton("test");
         panel.add(button);
-        button.setBounds(100, 100, 40, 40);
+        // button.setBounds(100, 100, 40, 40);
+        button.setBounds(0, 0, 40, 40);
         
         JLabel label = new JLabel("Test");
         panel.add(label);

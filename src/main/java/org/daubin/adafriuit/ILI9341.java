@@ -271,7 +271,8 @@ public class ILI9341 implements Display {
         
         if (data.length < SpiDevice.MAX_SUPPORTED_BYTES) {
             spiDevice.write(data);
-        } else {
+        }
+        else {
             int length;
             // Write data a chunk at a time.
             for (int start = 0; start < data.length; start+= SpiDevice.MAX_SUPPORTED_BYTES) {

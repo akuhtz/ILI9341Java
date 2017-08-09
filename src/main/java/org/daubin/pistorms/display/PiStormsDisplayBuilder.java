@@ -22,6 +22,7 @@ import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 import com.pi4j.io.spi.SpiChannel;
 import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.io.spi.SpiFactory;
@@ -41,7 +42,7 @@ public class PiStormsDisplayBuilder {
         return this;
     }
 
-    public PiStormsDisplay build() throws IOException {
+    public PiStormsDisplay build() throws IOException, UnsupportedBusNumberException {
 
         // Create LCD display class.
         SpiDevice spiDevice = SpiFactory.getInstance(

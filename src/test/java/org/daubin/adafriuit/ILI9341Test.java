@@ -9,9 +9,9 @@ import java.nio.charset.Charset;
 
 import org.daubin.adafriuit.ILI9341.State;
 import org.daubin.adafriuit.image.ImageRotation;
-import org.junit.Assert;
-import org.junit.Test;
 import org.mockito.Mockito;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.spi.SpiDevice;
@@ -42,13 +42,17 @@ public class ILI9341Test {
         MockSpiDevice spiDevice = new MockSpiDevice();
         ILI9341 ili9341 = new ILI9341(Mockito.mock(GpioPinDigitalOutput.class), Mockito.mock(GpioPinDigitalOutput.class), spiDevice, Mockito.mock(BufferedImage.class), ImageRotation.NONE);        
         
+        // the ILI9341#begin() already sends some data
+        int bytesBefore = spiDevice.getBytes().length;
+        Assert.assertEquals(bytesBefore, 88);
+
         ili9341.sendBytes(State.Data, bytes);
         
         byte[] bytesAfter = spiDevice.getBytes();
-        Assert.assertEquals(bytes.length, bytesAfter.length);
+        Assert.assertEquals(bytesAfter.length - bytesBefore, bytes.length);
         
         for (int i = 0; i < bytes.length; i++) {
-            Assert.assertEquals("Index: " + i, bytes[i], bytesAfter[i]);
+            Assert.assertEquals(bytesAfter[i + bytesBefore], bytes[i], "Index: " + i);
         }
     }
     
@@ -58,14 +62,17 @@ public class ILI9341Test {
         MockSpiDevice spiDevice = new MockSpiDevice();
         ILI9341 ili9341 = new ILI9341(Mockito.mock(GpioPinDigitalOutput.class), Mockito.mock(GpioPinDigitalOutput.class), spiDevice, Mockito.mock(BufferedImage.class), ImageRotation.NONE);        
         
+        // the ILI9341#begin() already sends some data
+        int bytesBefore = spiDevice.getBytes().length;
+        Assert.assertEquals(bytesBefore, 88);
         
         ili9341.sendShort(State.Data, 0x265535);
         
         byte[] bytesAfter = spiDevice.getBytes();
-        Assert.assertEquals(2, bytesAfter.length);
+        Assert.assertEquals(bytesAfter.length - bytesBefore, 2);
                 
-        Assert.assertEquals(0x55, bytesAfter[0]);
-        Assert.assertEquals(0x35, bytesAfter[1]);
+        Assert.assertEquals(bytesAfter[0 + bytesBefore], 0x55);
+        Assert.assertEquals(bytesAfter[1 + bytesBefore], 0x35);
     }
     
     private static class MockSpiDevice implements SpiDevice {
